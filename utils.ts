@@ -1,10 +1,10 @@
 import * as fs from "fs";
 
-function getInput(path: string): Array<string> {
+function getInput(path: string, separator: string): Array<string> {
   return fs
     .readFileSync(`./inputs/${path}`)
     .toString()
-    .split("\n")
+    .split(separator)
     .slice(0, -1);
 }
 

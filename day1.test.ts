@@ -35,12 +35,12 @@ describe("Day 1: The Tyranny of the Rocket Equation", () => {
     expect(calculateRequiredFuelPart1(["14"])).toEqual(2);
     expect(calculateRequiredFuelPart1(["1969"])).toEqual(654);
     expect(calculateRequiredFuelPart1(["100756"])).toEqual(33583);
-    console.log(calculateRequiredFuelPart1(getInput("day1.txt")));
+    console.log(calculateRequiredFuelPart1(getInput("day1.txt", "\n")));
   });
   test("part2", () => {
     expect(calculateRequiredFuelPart2(["14"])).toEqual(2);
     expect(calculateRequiredFuelPart2(["1969"])).toEqual(966);
     expect(calculateRequiredFuelPart2(["100756"])).toEqual(50346);
-    console.log(calculateRequiredFuelPart2(getInput("day1.txt")));
+    console.log(calculateRequiredFuelPart2(getInput("day1.txt", "\n")));
   });
 });
