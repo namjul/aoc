@@ -66,7 +66,29 @@ function calcIntCode(input: Array<string>) {
   return result;
 }
 
+function calcValue(noun: string, verb: string) {
+  return (input: Array<string>) => {
+    input[1] = noun;
+    input[2] = verb;
+    return calcIntCode(input)[0];
+  };
+}
+
+function calcFrom(from: number) {
+  return (input: Array<string>) => {
+    for (let i = 0, len = 100; i < len; i++) {
+      for (let j = 0, len = 100; j < len; j++) {
+        const value = calcValue(String(i), String(j))(input);
+        if(value === from) {
+          return 100 * i + j
+        }
+      }
+    }
+  };
+}
+
 describe("Day 2: 1202 Program Alarm", () => {
+  const input = getInput("day2.txt", ",");
   test("part1", () => {
     expect(calcIntCode(["1", "0", "0", "0", "99"])).toEqual([2, 0, 0, 0, 99]);
     expect(calcIntCode(["2", "3", "0", "3", "99"])).toEqual([2, 3, 0, 6, 99]);
@@ -78,11 +100,9 @@ describe("Day 2: 1202 Program Alarm", () => {
       99,
       9801
     ]);
-    const input = getInput("day2.txt", ",");
-    input[1] = '12';
-    input[2] = '2';
-    console.log(calcIntCode(input)[0]);
+    console.log(calcValue("12", "2")(input));
   });
-  /* test("part2", () => {
-  }); */
+  test("part2", () => {
+    console.log(calcFrom(19690720)(input) );
+  });
 });
