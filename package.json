@@ -17,6 +17,12 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+     "transform": {
+        ".(ts|tsx|js)": "ts-jest"
+      }
+  },
+  "dependencies": {
+    "fp-ts": "^2.2.0"
   }
 }
