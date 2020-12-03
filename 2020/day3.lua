@@ -12,36 +12,22 @@ for x in file:lines() do
 end
 file:close()
 
-local function reveal(location)
-    local x = location[1]
-    local y = location[2]
-    local row = grid[y]
+local function slide(right, down)
+  local trees = 0
+  local position = right
+  for index = down, #grid, down do
+    local columns = grid[index + 1]
+    if columns then
+      if columns[position % #columns + 1] == '#' then
+        trees = trees + 1
+      end
 
-    if y > #grid then
-      return nil
+      position = position + right
     end
+  end
 
-    local index = x > #row and x % #row or x
-    local sign = row[index == 0 and #row or index]
-    return sign
+  return trees
 end
 
-local function traverse(movement)
-  local right = movement[1]
-  local down = movement[2]
-  local currentLocation = {1,1}
-  local countTrees = 0
-
-  repeat
-    currentLocation = {currentLocation[1] + right, currentLocation[2] + down}
-    local sign = reveal(currentLocation)
-
-    if sign == '#' then
-      countTrees = countTrees + 1
-    end
-  until sign == nil
-
-  return countTrees
-end
-
-print(traverse({1,1}) * traverse({3,1}) * traverse({5,1}) * traverse({7,1}) * traverse({1,2}))
+print(slide(3, 1))
+print(slide(1,1) * slide(3,1) * slide(5,1) * slide(7,1) * slide(1,2))
