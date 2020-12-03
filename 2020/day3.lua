@@ -26,18 +26,22 @@ local function reveal(location)
     return sign
 end
 
-local right = 3
-local down = 1
-local currentLocation = {1,1}
-local countTrees = 0
+local function traverse(movement)
+  local right = movement[1]
+  local down = movement[2]
+  local currentLocation = {1,1}
+  local countTrees = 0
 
-repeat
-  currentLocation = {currentLocation[1] + right, currentLocation[2] + down}
-  local sign = reveal(currentLocation)
+  repeat
+    currentLocation = {currentLocation[1] + right, currentLocation[2] + down}
+    local sign = reveal(currentLocation)
 
-  if sign == '#' then
-    countTrees = countTrees + 1
-  end
-until sign == nil
+    if sign == '#' then
+      countTrees = countTrees + 1
+    end
+  until sign == nil
 
-print(countTrees)
+  return countTrees
+end
+
+print(traverse({1,1}) * traverse({3,1}) * traverse({5,1}) * traverse({7,1}) * traverse({1,2}))
