@@ -15,11 +15,71 @@ end
 
 local function isValid(password)
   local valid = true
-  local requiredFields = { byr = true, iyr = true, eyr  = true, hgt  = true, hcl  = true, ecl  = true, pid  = true, cid  = false }
+  local requiredFields = { 'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid' }
 
-  for key, value in pairs(requiredFields) do
-    if value and password[key] == null then
+  local function isBetween(value, lower, upper)
+    local valueAsNumber = tonumber(value)
+    return valueAsNumber <= upper and valueAsNumber >= lower
+  end
+
+  for _, value in ipairs(requiredFields) do
+    local pValue = password[value]
+    if password[value] == nil then
       valid = false
+    else
+      if value == 'byr' then
+        if not (string.match(password[value], '^%d%d%d%d$') and isBetween(password[value], 1920, 2002)) then
+          valid = false
+        end
+      end
+
+      if value == 'iyr' then
+        if not (string.match(password[value], '^%d%d%d%d$') and isBetween(password[value], 2010, 2020)) then
+          valid = false
+        end
+      end
+
+      if value == 'eyr' then
+        if not (string.match(password[value], '^%d%d%d%d$') and isBetween(password[value], 2020, 2030)) then
+          valid = false
+        end
+      end
+
+      if value == 'hgt' then
+        local height, unit = string.match(pValue, '(%d+)(.*)')
+        if unit == '' then
+          valid = false
+        end
+        if unit == 'cm' and not isBetween(height, 150, 193) then
+          valid = false
+        end
+        if unit == 'in' and not isBetween(height, 59, 76) then
+          valid = false
+        end
+      end
+
+      if value == 'hcl' then
+          -- local digitHex = string.match(pValue, '^#%d%d%d%d%d%d$')
+          -- local letterHex = string.match(pValue, '^#%a%a%a%a%a%a$')
+          -- may %x is corrent
+          local hex = string.match(pValue, '^#%x%x%x%x%x%x$')
+          if not hex then
+            valid = false
+          end
+      end
+
+      if value == 'ecl' then
+        local eyeColors = { amb = true, blu = true, brn = true, gry = true, grn = true, hzl = true, oth = true, }
+        if eyeColors[pValue] == nil then
+          valid = false
+        end
+      end
+
+      if value == 'pid' then
+        if not string.match(pValue, '^%d%d%d%d%d%d%d%d%d$') then
+          valid = false
+        end
+      end
     end
   end
   return valid
@@ -40,7 +100,7 @@ for x in file:lines() do
     if passwords[index] == nil then
       passwords[index] = fields
     else
-      for key, value in pairs(fields) do 
+      for key, value in pairs(fields) do
         passwords[index][key] = value
       end
     end
