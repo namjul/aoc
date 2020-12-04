@@ -5,6 +5,7 @@
 -- Meaning all combinations where order does not matter and do not repeat.
 -- Numbers should be combined with themself and the reverse would result in the same value.
 -- Inspiration: https://github.com/trekhleb/javascript-algorithms/blob/master/src/algorithms/sets/combinations/combineWithoutRepetitions.js
+-- run `lua ./day1.lua ./day1-input.txt`
 
 --- A function that returns all combinations without repetition
 -- @tparam tab comboOptions
@@ -26,7 +27,7 @@ local function combineWithoutRepetitions(comboOptions, comboLength)
     local slicedTable = {table.unpack(comboOptions, currentIndex + 1, #comboOptions)}
     local smallerCombo = combineWithoutRepetitions(slicedTable, comboLength - 1)
 
-    for index, value in ipairs(smallerCombo) do
+    for _, value in ipairs(smallerCombo) do
       local combo = {currentValue}
       if type(value) == 'string' then
         table.insert(combo, value)
@@ -36,9 +37,6 @@ local function combineWithoutRepetitions(comboOptions, comboLength)
           table.insert(combo, value[i])
         end
       end
-      -- for i = 1,#t2 do
-      --   t3[#t1+i] = t2[i]
-      -- end
 
       table.insert(combos, combo)
     end
@@ -56,7 +54,7 @@ local combinations = combineWithoutRepetitions(lines, 3)
 
 print(#combinations)
 
-for index, value in ipairs(combinations) do
+for _, value in ipairs(combinations) do
   local sum = value[1] + value[2] + value[3]
   if sum == 2020 then
     print(value[1] , value[2] , value[3])
