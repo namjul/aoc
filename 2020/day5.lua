@@ -21,18 +21,36 @@ local function search(input, range)
   return range[1]
 end
 
-local highest = 0
+
+local seats = {}
+
+local highestId = 0
 for x in file:lines() do
   local rowInput = string.sub(x, 1, 7)
   local colInput = string.sub(x, 8, 10)
 
-  local result = search(rowInput, {0,127}) * 8 + search(colInput, {0,7})
+  local row = search(rowInput, {0,127})
+  local col = search(colInput, {0,7})
 
-  if result > highest then
-    highest = result
+  seats[row..':'..col] = true
+
+  local id = row * 8 + col
+
+  if id > highestId then
+    highestId = id
   end
 end
 
-print(highest)
+for index=0,127,1 do
+  for j=0,7,1 do
+    if not seats[index..':'..j] then
+      print(index, j)
+    end
+  end
+end
+
+print('--')
+-- print(inspect(seats))
+-- print(highestId)
 
 file:close()
