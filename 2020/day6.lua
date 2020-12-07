@@ -42,11 +42,10 @@ for x in file:lines() do
   end
 end
 
+print(inspect(groups))
 
 local result = 0
 for _,group in ipairs(groups) do
-  -- print(group.amount)
-  -- print(inspect(group))
   local groupResult = 0
   for character,amount in pairs(group.character) do
     if amount == group.amount then
@@ -55,7 +54,6 @@ for _,group in ipairs(groups) do
   end
 
   result = groupResult + result
-  print(groupResult)
 end
 
 print('--')
