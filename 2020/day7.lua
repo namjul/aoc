@@ -20,9 +20,9 @@ for x in file:lines() do
 
   for _,value in ipairs(table.pack(utils.split(b, ','))) do
 
-    local c, d = string.match(value, '(%s%d%s)([%a%s]+)%sbags*')
+    local c, d = string.match(value, '%s(%d)%s([%a%s]+)%sbags*')
     if c then
-    bag[d] = c
+    bag[d] = tonumber(c)
     end
   end
 
@@ -46,11 +46,21 @@ local function checkShinyGold(name)
   end
 end
 
+local function allBags(name)
+  local bag = lookupTable[name]
+  local count = 0
+  for _name, amount in pairs(bag) do
+    count = (count + amount) + amount * allBags(_name)
+  end
+  return count
+end
+
+print(allBags('shiny gold'))
+
+
 local count = 0
 for name in pairs(lookupTable) do
   if (checkShinyGold(name)) then
-    print(name)
     count = count + 1
   end
 end
-print(count)
