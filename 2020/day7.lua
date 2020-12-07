@@ -14,13 +14,13 @@ local file = assert(io.open(arg[1]))
 local lookupTable = {}
 
 for x in file:lines() do
-  local a, b = string.match(x, '([%a%s]+)%sbags%scontain(.*,*%.*)')
+  local a, b = string.match(x, '(.*) bags contain (.*)%.')
 
   local bag = {}
 
   for _,value in ipairs(table.pack(utils.split(b, ','))) do
 
-    local c, d = string.match(value, '%s(%d)%s([%a%s]+)%sbags*')
+    local c, d = string.match(value, '(%d) (.*) bags?')
     if c then
     bag[d] = tonumber(c)
     end
