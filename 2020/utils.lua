@@ -11,4 +11,8 @@ function utils.split(inputstr, sep)
   return table.unpack(result)
 end
 
+function utils.clone(org)
+  return {table.unpack(org)}
+end
+
 return utils

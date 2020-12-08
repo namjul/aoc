@@ -4,27 +4,24 @@ local utils = require('utils')
 -- run `lua ./day8.lua ./day8-input.txt`
 
 local file = assert(io.open(arg[1]))
-local commands = {}
+local instructions = {}
 for line in file:lines() do
-  table.insert(commands, {utils.split(line)})
+  table.insert(instructions, {utils.split(line)})
 end
 
-
-local visited = {}
-
-local function run(index)
-  local instruction = commands[index]
+local function run(index, _instructions, visited)
+  local instruction = _instructions[index]
   local acc = 0
 
   if instruction == nil then
-    return acc, index
+    return acc, index, 'eof'
   end
 
   local command = instruction[1]
   local argument = instruction[2]
 
   if visited[index] ~= nil then
-    return acc, index
+    return acc, index, 'loop'
   end
   visited[index] = true
 
@@ -41,8 +38,8 @@ local function run(index)
     index = index + argument
   end
 
-  local _acc, _index = run(index)
-  return acc + _acc, _index
+  local _acc, _index, message = run(index, _instructions, visited)
+  return acc + _acc, _index, message
 end
 
 print('--')
@@ -51,29 +48,25 @@ print('--')
 -- print(run(1))
 
 -- part2
-for index = 1, #commands do
-  local instruction = commands[index]
+for index = 1, #instructions do
+  local instruction = instructions[index]
   local command = instruction[1]
   local argument = instruction[2]
 
+  local copyInstructions = utils.clone(instructions)
+
   if command == 'nop' then
-    commands[index] = {'jmp', argument}
-    local _acc, _index = run(1)
-    if _index == 648 then
-      print(_acc)
-    end
-    commands[index] = instruction
-    visited = {}
+    copyInstructions[index] = { 'jmp', argument }
   end
 
   if command == 'jmp' then
-    commands[index] = {'nop', argument}
-    local _acc, _index = run(1)
-    if _index == 648 then
-      print(_acc)
-    end
-    commands[index] = instruction
-    visited = {}
+    copyInstructions[index] = { 'nop', argument }
+  end
+
+  local _acc, _index, message = run(1, copyInstructions, {})
+  if message == 'eof' then
+    print(_acc)
+    break
   end
 end
 
