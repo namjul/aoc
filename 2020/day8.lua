@@ -12,15 +12,17 @@ end
 
 local visited = {}
 
-local index = 1
-local acc = 0
-
-local function run()
-  local instruction = commands[index] or {}
+local function run(index)
+  local instruction = commands[index]
   local command = instruction[1]
   local argument = instruction[2]
-  visited[index] = true
+  local acc = 0
 
+  if visited[index] ~= nil then
+    return acc
+  end
+
+  visited[index] = true
 
   if command == 'acc' then
     acc = acc + tonumber(argument)
@@ -35,10 +37,8 @@ local function run()
     index = index + argument
   end
 
+  return acc + run(index)
 end
 
-while visited[index] == nil do
-  run()
-end
-
-print(acc)
+print('--')
+print(run(1))
