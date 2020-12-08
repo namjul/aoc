@@ -6,7 +6,7 @@ local utils = require('utils')
 local file = assert(io.open(arg[1]))
 local commands = {}
 for line in file:lines() do
-  commands[#commands + 1] = {utils.split(line)}
+  table.insert(commands, {utils.split(line)})
 end
 
 
@@ -14,14 +14,18 @@ local visited = {}
 
 local function run(index)
   local instruction = commands[index]
-  local command = instruction[1]
-  local argument = instruction[2]
   local acc = 0
 
-  if visited[index] ~= nil then
-    return acc
+  if instruction == nil then
+    return acc, index
   end
 
+  local command = instruction[1]
+  local argument = instruction[2]
+
+  if visited[index] ~= nil then
+    return acc, index
+  end
   visited[index] = true
 
   if command == 'acc' then
@@ -37,8 +41,39 @@ local function run(index)
     index = index + argument
   end
 
-  return acc + run(index)
+  local _acc, _index = run(index)
+  return acc + _acc, _index
 end
 
 print('--')
-print(run(1))
+
+-- part1
+-- print(run(1))
+
+-- part2
+for index = 1, #commands do
+  local instruction = commands[index]
+  local command = instruction[1]
+  local argument = instruction[2]
+
+  if command == 'nop' then
+    commands[index] = {'jmp', argument}
+    local _acc, _index = run(1)
+    if _index == 648 then
+      print(_acc)
+    end
+    commands[index] = instruction
+    visited = {}
+  end
+
+  if command == 'jmp' then
+    commands[index] = {'nop', argument}
+    local _acc, _index = run(1)
+    if _index == 648 then
+      print(_acc)
+    end
+    commands[index] = instruction
+    visited = {}
+  end
+end
+
