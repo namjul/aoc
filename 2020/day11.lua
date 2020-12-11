@@ -40,6 +40,10 @@ local function printSeats(seats)
   print('--')
 end
 
+local function coordinateKey(coordinate)
+  return math.floor(coordinate[1])..':'..math.floor(coordinate[2])
+end
+
 local function lookupSurround(seats, origin)
   local x, y = utils.split(origin, ':')
   local adjacentSeats = {
@@ -48,10 +52,42 @@ local function lookupSurround(seats, origin)
     {x-1,y+1}, {x,y+1}, {x+1,y+1}
   }
   return #utils.filter(adjacentSeats, function (adjacentSeat)
-    local coordinate = math.floor((adjacentSeat[1]))..':'..math.floor((adjacentSeat[2]))
-    return seats[coordinate] == '#'
+    return seats[coordinateKey(adjacentSeat)] == '#'
   end)
 
+end
+
+local function lookupDiagonal(seats, origin)
+  local directions = {
+    {-1,-1}, {0,-1}, {1,-1},
+    {-1,0},          {1,0},
+    {-1,1},  {0,1},  {1,1}
+  }
+
+  local directionSeats = {}
+  for _, direction in ipairs(directions) do
+    local dx = direction[1]
+    local dy = direction[2]
+    local x, y = utils.split(origin, ':')
+    while true do
+      x = x + dx
+      y = y + dy
+      local seat = seats[coordinateKey({x,y})]
+      if seat == nil then
+        table.insert(directionSeats, '.')
+        break
+      end
+      if seat == 'L' then
+        table.insert(directionSeats, 'L')
+        break
+      end
+      if seat == '#' then
+        table.insert(directionSeats, '#')
+        break
+      end
+    end
+  end
+  return #utils.filter(directionSeats, function (v) return v == '#' end)
 end
 
 local function run(seats, lookupFn)
