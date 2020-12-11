@@ -48,6 +48,10 @@ function utils.filter(list, fn)
   return result
 end
 
+function utils.sum(list)
+  return utils.reduce(list, function (a, b) return a + b end)
+end
+
 -- Combination without repetition
 -- {1,2,3} => {1,2},{1,3},{2,3}
 -- Meaning all combinations where order does not matter and do not repeat.
