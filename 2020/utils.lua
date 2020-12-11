@@ -11,8 +11,11 @@ function utils.split(inputstr, sep)
   return table.unpack(result)
 end
 
-function utils.clone(org)
-  return {table.unpack(org)}
+function utils.clone(t)
+  if type(t) ~= 'table' then return t end
+  local res = {}
+  for k, v in pairs(t) do res[utils.clone(k)] = utils.clone(v) end
+  return res
 end
 
 function utils.reduce(list, fn, initial)
@@ -31,6 +34,16 @@ function utils.map(list, fn)
   local result = {}
   for index, value in ipairs(list) do
     table.insert(result, fn(value, index, list))
+  end
+  return result
+end
+
+function utils.filter(list, fn)
+  local result = {}
+  for index, value in pairs(list) do
+    if fn(value, index, list) then
+      table.insert(result, value)
+    end
   end
   return result
 end
