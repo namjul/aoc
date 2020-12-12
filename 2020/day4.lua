@@ -1,8 +1,6 @@
 local inspect = require('inspect')
 local utils = require('utils')
--- run `lua ./day4.lua ./day4-input.txt`
-
-local file = assert(io.open(arg[1]))
+-- run `lua ./day4.lua`
 
 local function parseLine(line)
   local result = {}
@@ -88,14 +86,14 @@ end
 local passwords = {}
 local index = 1
 
-for x in file:lines() do
+for line in utils.day(4) do
 
-  if x == '' then
+  if line == '' then
     index = index + 1
     print('\n')
   else
 
-    local fields = parseLine(x)
+    local fields = parseLine(line)
 
     if passwords[index] == nil then
       passwords[index] = fields
@@ -107,7 +105,6 @@ for x in file:lines() do
 
   end
 end
-file:close()
 
 local countValid = 0
 for _, value in ipairs(passwords) do

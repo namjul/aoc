@@ -4,11 +4,9 @@ local utils = require('utils')
 -- run `lua ./day12.lua ./day12-input.txt`
 
 local instructions = {}
-local file = assert(io.open(arg[1]))
-for line in file:lines() do
+for line in utils.day(12) do
   table.insert(instructions, line)
 end
-file:close()
 
 local function part1()
   local posx = 0

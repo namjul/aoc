@@ -52,6 +52,19 @@ function utils.sum(list)
   return utils.reduce(list, function (a, b) return a + b end)
 end
 
+function utils.day(day)
+  local file = assert(io.open('day'..day..'-input.txt'))
+  return function()
+    local line = file:read()
+    if line then
+      return line
+    else
+      file:close()
+      return nil
+    end
+  end
+end
+
 -- Combination without repetition
 -- {1,2,3} => {1,2},{1,3},{2,3}
 -- Meaning all combinations where order does not matter and do not repeat.

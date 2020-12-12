@@ -1,13 +1,12 @@
 local inspect = require('inspect')
+local utils = require('utils')
 
--- run `lua ./day10.lua ./day10-input.txt`
+-- run `lua ./day10.lua`
 
-local file = assert(io.open(arg[1]))
 local lines = {}
-for line in file:lines() do
+for line in utils.day(10) do
   table.insert(lines, tonumber(line))
 end
-file:close()
 
 table.sort(lines, function(a,b)
   return a < b and true or false

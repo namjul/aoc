@@ -1,7 +1,7 @@
 local inspect = require('inspect')
 local utils = require('utils')
 
--- run `lua ./day7.lua ./day7-input.txt`
+-- run `lua ./day7.lua`
 
 -- data structure:
 -- { 'light_red' = { 'bright_write' = 1, 'muted_yellow' = 2 } }
@@ -9,11 +9,9 @@ local utils = require('utils')
 -- { 'bright_white' = { 'shiny_gold' = 1 } }
 -- { 'muted yellow' = { 'shiny_gold' = 2, 'faded_blue' = 9 } }
 
-local file = assert(io.open(arg[1]))
-
 local lookupTable = {}
 
-for x in file:lines() do
+for x in utils.day(7) do
   local a, b = string.match(x, '(.*) bags contain (.*)%.')
 
   local bag = {}

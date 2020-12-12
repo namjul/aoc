@@ -1,3 +1,4 @@
+local utils = require('utils')
 -- run `lua ./day2.lua ./day2-input.txt`
 
 local function split(inputstr, sep)
@@ -45,10 +46,8 @@ local function valid2(input)
   return false
 end
 
-local file = assert(io.open(arg[1]))
 local lines = {}
-for x in file:lines() do lines[#lines+1] = parse(x) end
-file:close()
+for line in utils.day(2) do lines[#lines+1] = parse(line) end
 
 local count = 0
 for _, line in ipairs(lines) do

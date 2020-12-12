@@ -1,16 +1,14 @@
 local inspect = require('inspect')
+local utils = require('utils')
 
--- run `lua ./day3.lua ./day3-input.txt`
-
-local file = assert(io.open(arg[1]))
+-- run `lua ./day3.lua`
 
 local grid = {}
-for x in file:lines() do
+for line in utils.day(3) do
   local row = {}
-  string.gsub(x, '.', function(character) table.insert(row, character) end)
+  string.gsub(line, '.', function(character) table.insert(row, character) end)
   grid[#grid+1] = row
 end
-file:close()
 
 local function slide(right, down)
   local trees = 0

@@ -1,9 +1,7 @@
 local inspect = require('inspect')
 local utils = require('utils')
 
--- run `lua ./day6.lua ./day6-input.txt`
-
-local file = assert(io.open(arg[1]))
+-- run `lua ./day6.lua`
 
 -- local function intersection(t1, t2)
 --   local i = 1
@@ -21,7 +19,7 @@ local groups = {}
 local groupId = 1
 local personId = 1
 
-for x in file:lines() do
+for x in utils.day(6) do
   for character in string.gmatch(x, '.') do
     local group = groups[groupId] or { amount = 0 }
     local characterGroup = group['character'] or { }

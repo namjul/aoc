@@ -1,9 +1,7 @@
 local inspect = require('inspect')
 local utils = require('utils')
 
--- run `lua ./day5.lua ./day5-input.txt`
-
-local file = assert(io.open(arg[1]))
+-- run `lua ./day5.lua`
 
 local function search(input, range)
   for index=1, #input do
@@ -25,9 +23,9 @@ end
 local seats = {}
 
 local highestId = 0
-for x in file:lines() do
-  local rowInput = string.sub(x, 1, 7)
-  local colInput = string.sub(x, 8, 10)
+for line in utils.day(5) do
+  local rowInput = string.sub(line, 1, 7)
+  local colInput = string.sub(line, 8, 10)
 
   local row = search(rowInput, {0,127})
   local col = search(colInput, {0,7})
@@ -52,5 +50,3 @@ end
 print('--')
 -- print(inspect(seats))
 -- print(highestId)
-
-file:close()

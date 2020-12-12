@@ -1,14 +1,12 @@
 local inspect = require('inspect')
 local utils = require('utils')
 
--- run `lua ./day11.lua ./day11-input.txt`
+-- run `lua ./day11.lua`
 
 local rows = {}
-local file = assert(io.open(arg[1]))
-for line in file:lines() do
+for line in utils.day(11) do
   table.insert(rows, line)
 end
-file:close()
 
 -- data structure:
 -- a) {{'L', '.', 'L', ...}, {'L', 'L', ...}, ...}

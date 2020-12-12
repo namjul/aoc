@@ -1,11 +1,10 @@
 local inspect = require('inspect')
 local utils = require('utils')
 
--- run `lua ./day8.lua ./day8-input.txt`
+-- run `lua ./day8.lua`
 
-local file = assert(io.open(arg[1]))
 local instructions = {}
-for line in file:lines() do
+for line in utils.day(8) do
   table.insert(instructions, {utils.split(line)})
 end
 

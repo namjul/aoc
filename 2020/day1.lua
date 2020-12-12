@@ -1,10 +1,7 @@
 local utils = require('utils')
 
-
-local file = assert(io.open(arg[1]))
 local lines = {}
-for x in file:lines() do lines[#lines+1] = x end
-file:close()
+for x in utils.day(1) do lines[#lines+1] = x end
 
 local combinations = utils.combineWithoutRepetitions(lines, 3)
 
