@@ -10,23 +10,23 @@ for line in file:lines() do
 end
 file:close()
 
-function part1()
-  local coordinate = { E = 0, N = 0 }
+local function part1()
+  local posx = 0
+  local posy = 0
   local directions = {'N','E','S','W'}
   local direction = 2
 
   for _,instruction in ipairs(instructions) do
     local action, value = string.match(instruction, '(%a)(%d+)')
-    -- print(action, value, instruction)
 
     if action == 'N' then
-      coordinate['N'] = coordinate['N'] + value
+      posy = posy + value
     elseif action == 'S' then
-      coordinate['N'] = coordinate['N'] - value
+      posy = posy - value
     elseif action == 'E' then
-      coordinate['E'] = coordinate['E'] + value
+      posx = posx + value
     elseif action == 'W' then
-      coordinate['E'] = coordinate['E'] - value
+      posx = posx - value
     elseif action == 'L' then
       direction = (direction - value / 90) % #directions
       direction = direction == 0 and #directions or direction
@@ -34,59 +34,55 @@ function part1()
       direction = math.floor((direction + value / 90) % #directions)
       direction = direction == 0 and #directions or direction
     elseif action == 'F' then
-      local fDirection = directions[direction]
-      if fDirection == 'N' or fDirection == 'E' then
-        coordinate[fDirection] = coordinate[fDirection] + value
-      elseif fDirection == 'S' then
-        coordinate['N'] = coordinate['N'] - value
-      elseif fDirection == 'W' then
-        coordinate['E'] = coordinate['E'] - value
+      if directions[direction] == 'N' then
+        posy = posy + value
+      elseif directions[direction] == 'E' then
+        posx = posx + value
+      elseif directions[direction] == 'S' then
+        posy = posy - value
+      elseif directions[direction] == 'W' then
+        posx = posx - value
       end
     end
-    -- print(inspect(coordinate), directions[direction])
   end
-  return coordinate
+  return posx, posy
 end
 
 local function part2()
-  local coordinate = { x = 0, y = 0 }
-  local waypoint = { x = 10, y = 1 }
+  local posx = 0
+  local posy = 0
+  local wpx = 10
+  local wpy = 1
 
   for _,instruction in ipairs(instructions) do
     local action, value = string.match(instruction, '(%a)(%d+)')
-    print(action, value, instruction)
 
     if action == 'N' then
-      waypoint['y'] = waypoint['y'] + value
+      wpy = wpy + value
     elseif action == 'S' then
-      waypoint['y'] = waypoint['y'] - value
+      wpy = wpy - value
     elseif action == 'E' then
-      waypoint['x'] = waypoint['x'] + value
+      wpx = wpx + value
     elseif action == 'W' then
-      waypoint['x'] = waypoint['x'] - value
+      wpx = wpx - value
     elseif ({R90 = true, L270 = true})[instruction] then
-      local cWaypoint = utils.clone(waypoint)
-      waypoint['x'] = cWaypoint['y']
-      waypoint['y'] = -cWaypoint['x']
+      wpx, wpy = wpy, -wpx
     elseif ({R180 = true, L180 = true})[instruction] then
-      waypoint['x'] = -waypoint['x']
-      waypoint['y'] = -waypoint['y']
+      wpx, wpy = -wpx, -wpy
     elseif ({R270 = true, L90 = true})[instruction] then
-      local cWaypoint = utils.clone(waypoint)
-      waypoint['x'] = -cWaypoint['y']
-      waypoint['y'] = cWaypoint['x']
+      wpx, wpy = -wpy, wpx
     elseif action == 'F' then
-      coordinate['x'] = coordinate['x'] + waypoint['x'] * value
-      coordinate['y'] = coordinate['y'] + waypoint['y'] * value
+      posx = posx + wpx * value
+      posy = posy + wpy * value
     end
-
-    -- print(inspect(waypoint))
   end
 
-  return coordinate
+  return posx, posy
 end
 
 
-local coordinate = part2()
-print(inspect(coordinate))
-print(math.abs(coordinate['x']) + math.abs(coordinate['y']))
+local posx1, posy1 = part1()
+print(math.abs(posx1) + math.abs(posy1))
+
+local posx2, posy2 = part2()
+print(math.abs(posx2) + math.abs(posy2))
