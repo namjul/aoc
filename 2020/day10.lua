@@ -8,28 +8,28 @@ for line in utils.day(10) do
   table.insert(lines, tonumber(line))
 end
 
-table.sort(lines, function(a,b)
-  return a < b and true or false
-end)
-table.insert(lines, 1, 0)
-table.insert(lines, lines[#lines] + 3)
+table.sort(lines)
 
 print(inspect(lines))
 print('--')
 
 -- part1
-local function calcDifferences()
-  local differences = {}
-  for index,value in ipairs(lines) do
-      local difference = tostring(value - (lines[index - 1] or 0))
-      differences[difference] = (differences[difference] or 0) + 1
+function calcDifferences()
+  local differences = { 0, 0, 1 }
+  local last = 0
+  for _,value in ipairs(lines) do
+    local difference = value - last
+    differences[difference] = differences[difference] + 1
+    last = value
   end
 
-  print(inspect(differences), differences['1'] * differences['3'])
+  print(inspect(differences), differences[1] * differences[3])
 end
 calcDifferences()
 
 -- part2
+table.insert(lines, 1, 0)
+table.insert(lines, lines[#lines] + 3)
 local cache = {}
 local function countCombinations(from)
   if cache[from] then
