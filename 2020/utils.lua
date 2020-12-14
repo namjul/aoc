@@ -20,7 +20,7 @@ end
 
 function utils.reduce(list, fn, initial)
   local acc = initial
-  for index, value in ipairs(list) do
+  for index, value in pairs(list) do
     if index == 1 then
       acc = value
     else
@@ -63,6 +63,10 @@ function utils.day(day)
       return nil
     end
   end
+end
+
+function utils.trim(s)
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
 -- Combination without repetition
