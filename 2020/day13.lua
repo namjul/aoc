@@ -4,55 +4,50 @@ local inspect = require('inspect')
 -- run `lua ./day13.lua`
 
 local iterator = utils.day(13)
-local timestamp = tonumber(iterator())
-local busIds = {utils.split(iterator(), ',')}
-local busIdsWithoutX = utils.filter(busIds, function (value) return value ~= 'x' end)
+local start = tonumber(iterator())
+local buses = {utils.split(iterator(), ',')}
 
-print(timestamp)
-print(inspect(busIds))
+print(start)
+print(inspect(buses), #buses)
 print('--')
 
-local function departureTime()
-  local times = {}
-  for _, busId in ipairs(busIdsWithoutX) do
-    table.insert(times, math.ceil(timestamp / tonumber(busId)) * tonumber(busId))
-  end
+local function part1(list)
+  local maxWaitTime, busToTake = 9999999, 0
+  utils.forEach(list, function(bus)
+    local timeToWait = bus - start % bus
+    if timeToWait < maxWaitTime then
+      maxWaitTime = timeToWait
+      busToTake = bus
+    end
 
-  local index={}
-  for k,v in ipairs(times) do
-    index[v]=k
-  end
-  return math.min(table.unpack(times)), index
+  end)
+  return maxWaitTime * busToTake
 end
 
--- part1
-local minDepartedTime, lookup = departureTime()
-local waitingTime = minDepartedTime - timestamp
-print(waitingTime * busIdsWithoutX[lookup[minDepartedTime]])
+print((part1(utils.map(buses, function (value) return tonumber(value) end))))
 
--- part2
+local function part2(list)
 
-local function earliestTime(list)
-  local time = 0
-  while true do
-    local count = 0
-    for index, busId in ipairs(list) do
-      if busId ~= 'x' then
-        local minute = index - 1
-        if (time + minute) % tonumber(busId) == 0 then
-          count = count + 1
-        else
-          break
-        end
+  local listx = utils.filter(
+    utils.map(
+      list,
+      function (value, index) return { index - 1, type(value) == 'number' and tonumber(value) or value } end
+    ),
+    function (value) return value[2] ~= 'x' end
+  )
+
+  local jump, time = 1, 0
+  for _, bus in ipairs(listx) do
+    local delta, busId = table.unpack(bus)
+    while true do
+      if (delta + time) % busId  == 0 then
+        break
       end
+      time = time + jump
     end
-
-    if count >= #utils.filter(list, function (value) return value ~= 'x' end) then
-      return time
-    end
-
-    time = time + list[1]
+    jump = jump * busId
   end
+  return ("%.f"):format(time)
 end
 
-print(earliestTime(busIds))
+print(part2(buses))
