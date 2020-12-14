@@ -1,3 +1,4 @@
+local inspect = require('inspect')
 local utils =  {}
 
 function utils.split(inputstr, sep)
@@ -69,6 +70,12 @@ function utils.trim(s)
   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
+function utils.forEach(list, fn)
+  for currentIndex, currentValue in ipairs(list) do
+      fn(currentValue, currentIndex)
+  end
+end
+
 -- Combination without repetition
 -- {1,2,3} => {1,2},{1,3},{2,3}
 -- Meaning all combinations where order does not matter and do not repeat.
@@ -82,22 +89,18 @@ end
 -- @treturn tab
 
 function utils.combineWithoutRepetitions(comboOptions, comboLength)
+  if comboLength == 1 then
+    return utils.map(comboOptions, function (option) return {option} end)
+  end
 
   local combos = {}
 
-  if comboLength == 1 then
-    for index, value in ipairs(comboOptions) do
-      combos[index] = value
-    end
-    return combos
-  end
-
-  for currentIndex, currentValue in ipairs(comboOptions) do
+  utils.forEach(comboOptions, function (currentOption, currentIndex)
     local slicedTable = {table.unpack(comboOptions, currentIndex + 1, #comboOptions)}
     local smallerCombo = utils.combineWithoutRepetitions(slicedTable, comboLength - 1)
 
-    for _, value in ipairs(smallerCombo) do
-      local combo = {currentValue}
+    utils.forEach(smallerCombo, function (value)
+      local combo = {currentOption}
       if type(value) == 'string' then
         table.insert(combo, value)
       end
@@ -108,10 +111,44 @@ function utils.combineWithoutRepetitions(comboOptions, comboLength)
       end
 
       table.insert(combos, combo)
-    end
-  end
+    end)
+  end)
 
   return combos
+end
+
+-- Permutatino with repetition
+
+function utils.permutateWithRepetition(permutationOptions, permutationLength)
+  permutationLength = permutationLength or #permutationOptions
+
+  if permutationLength == 1 then
+    return utils.map(permutationOptions, function (option) return {option} end)
+  end
+
+  local permutations = {}
+
+  local smallerPermutations = utils.permutateWithRepetition(
+    permutationOptions,
+    permutationLength - 1
+  )
+
+  utils.forEach(permutationOptions, function (currentOption)
+    utils.forEach(smallerPermutations, function (smallerPermutation)
+      local permutation = {currentOption}
+      if type(smallerPermutation) == 'string' then
+        table.insert(permutation, smallerPermutation)
+      end
+      if type(smallerPermutation) == 'table' then
+        utils.forEach(smallerPermutation, function (value)
+          table.insert(permutation, value)
+        end)
+      end
+      table.insert(permutations, permutation)
+    end)
+  end)
+
+  return permutations
 end
 
 return utils

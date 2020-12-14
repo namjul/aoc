@@ -76,17 +76,15 @@ local function part2()
           result = result..addressBinary:sub(index, index)
         end
       end
-      local floatinBits = ({string.gsub(result, 'X', '')})[2]
-      local floatinBitsMax = tonumber(genStringNumber(floatinBits), 2) - 1
-      for i = 0, floatinBitsMax do
-        local floatingBinary = toBinary(i, floatinBits)
+      local floatingBits = ({string.gsub(result, 'X', '')})[2]
+      utils.forEach(utils.permutateWithRepetition({0, 1}, floatingBits), function (permutation)
         local counter = 0
         local newAddress = string.gsub(result, 'X', function ()
           counter = counter + 1
-          return floatingBinary:sub(counter,counter)
+          return tostring(permutation[counter])
         end)
         program[newAddress] = value
-      end
+      end)
     end
   end
 
