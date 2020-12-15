@@ -10,7 +10,7 @@ local inspect = require('inspect')
 -- 0,3,6,(6->0),(0->3),(3->3),(3->1),(1->0),(0->4),(4->0)
 
 local input = {6,13,1,15,2,0}
--- local max = 2020 
+-- local max = 2020
 local max = 30000000
 
 local map = {}
@@ -18,19 +18,20 @@ utils.forEach({table.unpack(input, 1, #input - 1)}, function (value, index)
   map[value] = index
 end)
 
-local result = utils.clone(input)
+local result = 0
+local previousResult
 
 for i = #input, max - 1 do
-  local lastNumber = result[#result]
-
-  if map[lastNumber] then
-    local age = i - map[lastNumber]
-    table.insert(result, age)
+  if map[result] then
+    local age = i - map[result]
+    previousResult = result
+    result = age
   else
-    table.insert(result, 0)
+    previousResult = result
+    result = 0
   end
 
-  map[result[#result - 1]] = i
+  map[previousResult] = i
 end
 
-print(result[#result])
+print(result)
