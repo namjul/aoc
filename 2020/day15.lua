@@ -10,7 +10,8 @@ local inspect = require('inspect')
 -- 0,3,6,(6->0),(0->3),(3->3),(3->1),(1->0),(0->4),(4->0)
 
 local input = {6,13,1,15,2,0}
-local max = 2020
+-- local max = 2020 
+local max = 30000000
 
 local map = {}
 utils.forEach({table.unpack(input, 1, #input - 1)}, function (value, index)
