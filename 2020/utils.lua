@@ -72,7 +72,7 @@ end
 
 function utils.forEach(list, fn)
   for currentIndex, currentValue in ipairs(list) do
-      fn(currentValue, currentIndex)
+      fn(currentValue, currentIndex, list)
   end
 end
 
