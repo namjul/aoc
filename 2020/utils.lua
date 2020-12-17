@@ -20,13 +20,9 @@ function utils.clone(t)
 end
 
 function utils.reduce(list, fn, initial)
-  local acc = initial
-  for index, value in pairs(list) do
-    if index == 1 then
-      acc = value
-    else
-      acc = fn(acc, value, index)
-    end
+  local acc = initial or list[1]
+  for index, value in pairs(initial and list or utils.tail(list)) do
+    acc = fn(acc, value, index, list)
   end
   return acc
 end
@@ -41,8 +37,8 @@ end
 
 function utils.filter(list, fn)
   local result = {}
-  for index, value in pairs(list) do
-    if fn(value, index, list) then
+  for key, value in pairs(list) do
+    if fn(value, key, list) then
       table.insert(result, value)
     end
   end
@@ -51,6 +47,54 @@ end
 
 function utils.sum(list)
   return utils.reduce(list, function (a, b) return a + b end)
+end
+
+function utils.every(list, fn)
+  for key,value in pairs(list) do
+    if not fn(value, key, list) then
+      return false
+    end
+  end
+  return true
+end
+
+function utils.partition(list, fn)
+  local part1 = {}
+  local part2 = {}
+
+  for key, value in pairs(list) do
+    if fn(value, key) then
+      part1[key] = value
+    else
+      part2[key] = value
+    end
+  end
+
+  return part1, part2
+end
+
+function utils.len(list)
+  local count = 0
+  for _, _ in pairs(list) do
+    count = count + 1
+  end
+  return count
+end
+
+function utils.keys(list)
+  local keys = {}
+  for key, _ in pairs(list) do
+    table.insert(keys, key)
+  end
+  return keys
+end
+
+function utils.values(list)
+  local values = {}
+  for _, value in pairs(list) do
+    table.insert(values, value)
+  end
+  return values
 end
 
 function utils.day(day)
@@ -70,10 +114,47 @@ function utils.trim(s)
   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
+function utils.empty(list)
+  return utils.len(list) == 0
+end
+
 function utils.forEach(list, fn)
   for currentIndex, currentValue in ipairs(list) do
       fn(currentValue, currentIndex, list)
   end
+end
+
+function utils.tail(list)
+  return {table.unpack(list, 2, #list)}
+end
+
+function utils.difference(list1, list2)
+  local result = {}
+  for key, value1 in pairs(list1) do
+    -- if value1 is not in list2
+    local found = false
+    for _, value2 in pairs(list2) do
+      if value1 == value2 then
+        found = true
+      end
+    end
+    if not found then
+      table.insert(result, value1)
+      -- result[key] = value1
+    end
+  end
+  return result
+end
+
+function utils.merge(list1, list2)
+  for key, value in pairs(list2) do
+    list1[key] = value
+  end
+  return list1
+end
+
+function utils.startsWith(str,start)
+   return string.sub(str,1,string.len(start))==start
 end
 
 -- Combination without repetition
