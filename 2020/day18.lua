@@ -210,9 +210,40 @@ local function parse(input)
   return { type = 'prog', prog = prog }
 end
 
-local function evaluate(ast)
-  print('AST: ', inspect(ast))
+local function evaluate(exp)
+  local function applyOp(op, left, right)
+    local function num(x)
+      if type(x) ~= 'number' then
+        error('Expected number but go '..x)
+      end
+      return x
+    end
+
+    if op == '+' then
+      return num(left) + num(right)
+    elseif op == '*' then
+      return num(left) * num(right)
+    end
+    error('Can\'t apply operator '..op);
+  end
+
+  if exp.type == 'num' then
+    return exp.value
+  end
+
+  if exp.type == 'prog' then
+    local value = 0
+    utils.forEach(exp.prog, function(exp)
+      value = value + evaluate(exp)
+    end)
+    return value
+  end
+  if exp.type == 'binary' then
+    return applyOp(exp.operator,
+      evaluate(exp.left),
+      evaluate(exp.right));
+  end
 end
 
 local ast = parse(TokenStream:new(InputStream:new(code)))
-evaluate(ast)
+print(evaluate(ast))
