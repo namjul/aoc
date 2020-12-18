@@ -152,6 +152,10 @@ end
 local function parse(input)
 
   local parseAtom, parseExpression
+  local PRECEDENCE = {
+    ['*'] = 10,
+    ['+'] = 20,
+  }
 
   local function isPunc(ch)
     local tok = input:peek()
@@ -171,16 +175,20 @@ local function parse(input)
     end
   end
 
-  local function maybeBinary(left)
+  local function maybeBinary(left, myPrec)
     local tok = isOp()
     if tok then
-      input:next()
-      return maybeBinary({
-        type = 'binary',
-        operator = tok.value,
-        left = left,
-        right = parseAtom()
-      })
+      local hisPrec = PRECEDENCE[tok.value];
+      if hisPrec > myPrec then
+        input:next()
+        local right = maybeBinary(parseAtom(), hisPrec)
+        return maybeBinary({
+          type = 'binary',
+          operator = tok.value,
+          left = left,
+          right = right
+        }, myPrec)
+      end
     end
     return left
   end
@@ -197,7 +205,7 @@ local function parse(input)
   end
 
   function parseExpression()
-    return maybeBinary(parseAtom())
+    return maybeBinary(parseAtom(), 0)
   end
 
   local prog = {}
