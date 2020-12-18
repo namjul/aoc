@@ -17,6 +17,23 @@ local code = file:read("*all")
 file:close()
 
 --
+-- Helper
+--
+
+local function isWhitespace(ch)
+  return ch:match('%s') and true or false
+end
+local function isPunc(ch)
+  return ch:match('[%(%)]') and true or false
+end
+local function isDigit(ch)
+  return ch:match('%d') and true or false
+end
+local function isOpChar(ch)
+  return ch:match('[%+%*]') and true or false
+end
+
+--
 -- InputStream
 --
 
@@ -60,50 +77,36 @@ function TokenStream.new(self, input)
   t.input = input
   return t
 end
-function TokenStream.isWhitespace(_, ch)
-  return ch:match('%s') and true or false
-end
-function TokenStream.isPunc(_, ch)
-  return ch:match('[%(%)]') and true or false
-end
-function TokenStream.isDigit(_, ch)
-  return ch:match('%d') and true or false
-end
-function TokenStream.isOpChar(_, ch)
-  return ch:match('[%+%*]') and true or false
-end
 function TokenStream.readWhile(self, predicate)
   local str = ''
-  while not self.input:eof() and predicate(self, self.input:peek()) do
+  while not self.input:eof() and predicate(self.input:peek()) do
     str = str..self.input:next()
   end
   return str
 end
 function TokenStream.readNumber(self)
-  local number = self:readWhile(function(_, ch)
-    return self.isDigit(self, ch)
-  end)
+  local number = self:readWhile(isDigit)
  return { type = 'num', value = tonumber(number) }
 end
 function TokenStream.readNext(self)
-  self:readWhile(self.isWhitespace)
+  self:readWhile(isWhitespace)
   if self.input:eof() then
     return nil
   end
   local ch = self.input:peek()
-  if self:isPunc(ch) then
+  if isPunc(ch) then
     return {
       type = 'punc',
       value = self.input:next()
     }
   end
-  if self:isDigit(ch) then
+  if isDigit(ch) then
     return self:readNumber()
   end
-  if self:isOpChar(ch) then
+  if isOpChar(ch) then
     return {
       type = 'op',
-      value = self:readWhile(self.isOpChar)
+      value = self:readWhile(isOpChar)
     }
   end
 
@@ -128,11 +131,11 @@ end
 --
 
 local function parse(input)
- local prog = {}
- while not input:eof() do
-   table.insert(prog, input:next())
- end
- return { type = 'prog', prog = prog };
+  local prog = {}
+  while not input:eof() do
+    table.insert(prog, input:next())
+  end
+  return { type = 'prog', prog = prog }
 end
 
 local function evaluate(ast)
