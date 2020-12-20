@@ -149,31 +149,23 @@ local utils = require('utils')
 -- ..#.#....# ##.#.#.... ...##.....
 -- 
 -- 
--- 
+--
+-- 1951    2311    3079
+-- 2729    1427    2473
+-- 2971    1489    1171
+--
 
--- Tile 2311
--- Tile 1951
--- Tile 1171
--- Tile 1427
--- Tile 1489
--- Tile 2473
--- Tile 2971
--- Tile 2729/problems/missing-number/description/
--- Tile 3079
-
-
-
--- local tiles = {
---   ['#...##.#..'] = {},
---   ['..###..###'] = {},
---   ['#.#.#####.'] = {},
---   ['#.##...###'] = {
---     [3931] = 'bottom',
---     [20302] =  'top'
---   }
+-- local x = {
+--   [1951] = {2311,2729},
+--   [2311] = {1951,1427,3079},
+--   [3079] = {2311,2473},
+--   [2729] = {1951,1472,2971}
+--   [1427] = {}
+--   [2473] = {}
+--   [2971] = {}
+--   [1489] = {}
+--   [1171] = {}
 -- }
---
---
 
 
 local current
@@ -212,7 +204,7 @@ for line in utils.day(20) do
 
 end
 
--- print(inspect(tiles))
+print(inspect(tiles))
 
 local function match(tile1, tile2)
   local result = {}
@@ -226,22 +218,25 @@ local function match(tile1, tile2)
   return result
 end
 
-local done = {}
 local matchCount = {}
-for idOuter, tileOuter in pairs(tiles) do
-  for idInner, tileInner in pairs(tiles) do
-
-    if idOuter ~= idInner and not (done[idOuter..idInner] or done[idInner..idOuter]) then
-      local matches = match(tileOuter, tileInner)
-      if #matches > 0 then
-        matchCount[idOuter] = (matchCount[idOuter] or 0) + 1
-        matchCount[idInner] = (matchCount[idInner] or 0) + 1
-      end
-      done[idOuter..idInner] = true
-    end
-
+local matchMap = {}
+local combinations = utils.combineWithoutRepetitions(utils.map(tiles, function(edges, key) return {id = key, edges = edges} end), 2)
+for _, value in ipairs(combinations) do
+  local tile1, tile2 = table.unpack(value)
+  local matches = match(tile1.edges, tile2.edges)
+  if #matches > 0 then
+    outerMatches = matchMap[tile1.id] or {}
+    innerMatches = matchMap[tile2.id] or {}
+    table.insert(outerMatches, tile2.id)
+    table.insert(innerMatches, tile1.id)
+    matchMap[tile1.id] = outerMatches
+    matchMap[tile2.id] = innerMatches
+    matchCount[tile1.id] = (matchCount[tile1.id] or 0) + 1
+    matchCount[tile2.id] = (matchCount[tile2.id] or 0) + 1
   end
 end
+
+-- print(inspect(matchMap))
 
 local count = 1
 for id, value in pairs(matchCount) do

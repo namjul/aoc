@@ -21,16 +21,16 @@ end
 
 function utils.reduce(list, fn, initial)
   local acc = initial or list[1]
-  for index, value in pairs(initial and list or utils.tail(list)) do
-    acc = fn(acc, value, index, list)
+  for key, value in pairs(initial and list or utils.tail(list)) do
+    acc = fn(acc, value, key, list)
   end
   return acc
 end
 
 function utils.map(list, fn)
   local result = {}
-  for index, value in ipairs(list) do
-    table.insert(result, fn(value, index, list))
+  for key, value in pairs(list) do
+    table.insert(result, fn(value, key, list))
   end
   return result
 end
@@ -119,8 +119,8 @@ function utils.empty(list)
 end
 
 function utils.forEach(list, fn)
-  for currentIndex, currentValue in ipairs(list) do
-      fn(currentValue, currentIndex, list)
+  for key, value in pairs(list) do
+      fn(value, key, list)
   end
 end
 
