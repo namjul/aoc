@@ -12,6 +12,26 @@ function utils.split(inputstr, sep)
   return table.unpack(result)
 end
 
+function utils.intersection(list1, list2)
+  local result = {}
+  for _, value1 in pairs(list1) do
+    for _,value2 in pairs(list2) do
+      if value1 == value2 then
+        table.insert(result, value1)
+      end
+    end
+  end
+  return result
+end
+
+function utils.find(list, fn)
+  for index, value in ipairs(table_name) do
+    if fn(value, index, list) then
+      return value
+    end
+  end
+end
+
 function utils.clone(t)
   if type(t) ~= 'table' then return t end
   local res = {}
@@ -228,6 +248,41 @@ function utils.permutateWithRepetition(permutationOptions, permutationLength)
       table.insert(permutations, permutation)
     end)
   end)
+
+  return permutations
+end
+
+function utils.permutateWithoutRepetitions(permutationOptions)
+
+  if #permutationOptions == 1 then
+    return {permutationOptions}
+  end
+
+  local permutations = {}
+
+  -- Get all permutations for permutationOptions excluding the first element.
+  local smallerPermutations = utils.permutateWithoutRepetitions({table.unpack(permutationOptions, 2)});
+  -- print('smallerPermutations', inspect(smallerPermutations))
+
+  -- Insert first option into every possible position of every smaller permutation.
+  local firstOption = permutationOptions[1]
+
+  for permIndex=1, #smallerPermutations do
+    local smallerPermutation = smallerPermutations[permIndex]
+      -- print('smallerPermutation', inspect(smallerPermutation))
+
+    for positionIndex=0, #smallerPermutation do
+      local permutation = {}
+      local permutationPrefix = {table.unpack(smallerPermutation, 1,positionIndex)}
+      local permutationSuffix = {table.unpack(smallerPermutation, positionIndex + 1)}
+      permutation = permutationPrefix
+      table.insert(permutation, firstOption)
+      for _, x in ipairs(permutationSuffix) do
+        table.insert(permutation, x)
+      end
+      table.insert(permutations, permutation)
+    end
+  end
 
   return permutations
 end
