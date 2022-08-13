@@ -2,6 +2,8 @@ local utils = require('utils')
 local inspect = require('inspect')
 
 -- run `lua ./day13.lua`
+-- https://www.youtube.com/watch?v=4_5mluiXF5I
+-- https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/math/euclidean-algorithm
 
 local iterator = utils.day(13)
 local start = tonumber(iterator())

@@ -25,9 +25,17 @@ function utils.intersection(list1, list2)
 end
 
 function utils.find(list, fn)
-  for index, value in ipairs(table_name) do
+  for index, value in ipairs(list) do
     if fn(value, index, list) then
       return value
+    end
+  end
+end
+
+function utils.findIndex(list, fn)
+  for index, value in ipairs(list) do
+    if fn(value, index, list) then
+      return index
     end
   end
 end
@@ -198,6 +206,35 @@ function utils.combineWithoutRepetitions(comboOptions, comboLength)
 
   utils.forEach(comboOptions, function (currentOption, currentIndex)
     local slicedTable = {table.unpack(comboOptions, currentIndex + 1, #comboOptions)}
+    local smallerCombo = utils.combineWithoutRepetitions(slicedTable, comboLength - 1)
+
+    utils.forEach(smallerCombo, function (value)
+      local combo = {currentOption}
+      if type(value) == 'string' then
+        table.insert(combo, value)
+      end
+      if type(value) == 'table' then
+        for i = 1, #value do
+          table.insert(combo, value[i])
+        end
+      end
+
+      table.insert(combos, combo)
+    end)
+  end)
+
+  return combos
+end
+
+function utils.combineWithRepetitions(comboOptions, comboLength)
+  if comboLength == 1 then
+    return utils.map(comboOptions, function (option) return {option} end)
+  end
+
+  local combos = {}
+
+  utils.forEach(comboOptions, function (currentOption, currentIndex)
+    local slicedTable = {table.unpack(comboOptions, currentIndex, #comboOptions)}
     local smallerCombo = utils.combineWithoutRepetitions(slicedTable, comboLength - 1)
 
     utils.forEach(smallerCombo, function (value)
