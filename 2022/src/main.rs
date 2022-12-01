@@ -9,7 +9,12 @@ fn main() -> io::Result<()> {
         .split("\n")
         .map(|x| x.parse::<u32>().unwrap_or(0))
         .collect();
-    let output = day1::run(input);
-    println!("{:#?}", output);
+    let (first, second) = day1::run(input).unwrap();
+    println!(
+        "
+first: {}
+second: {}",
+        first, second
+    );
     Ok(())
 }
