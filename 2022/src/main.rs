@@ -7,6 +7,6 @@ fn main() -> io::Result<()> {
         fs::read_to_string("./src/day1.txt").expect("Should have been able to read the file");
     let input: Vec<&str> = contents.split("\n").collect();
     let output = day1::run(input);
-    println!("{output}");
+    println!("{:#?}", output);
     Ok(())
 }
