@@ -1,16 +1,17 @@
 pub fn run(input: Vec<&str>) -> Option<(u32, u32)> {
+
     let yy: u32 = input
         .iter()
         .map(|&x| {
-            let x: Vec<&str> = x.split_whitespace().collect();
+            let xx: Vec<&str> = x.split_whitespace().collect();
 
-            let a = *x.first().unwrap();
-            let b = *x.last().unwrap();
+            let a = *xx.first().unwrap();
+            let b = *xx.last().unwrap();
 
             // "A" | "X" => Rock(1),
             // "B" | "Y" => Paper(2),
             // "C" | "Z" => Scissors(3),
-            let result = match (a, b) {
+            let result1 = match (a, b) {
                 ("A", "X") => 1+3,
                 ("A", "Y") => 2+6,
                 ("A", "Z") => 3+0,
@@ -23,8 +24,24 @@ pub fn run(input: Vec<&str>) -> Option<(u32, u32)> {
                 _ => 0,
             };
 
+            // "X" => Lose
+            // "Y" => Draw
+            // "Z" => Win
+            let result2 = match (a, b) {
+                ("A", "X") => 3+0, // Z+Lose
+                ("A", "Y") => 1+3, // A+Draw
+                ("A", "Z") => 2+6, // B+Win
+                ("B", "X") => 1+0, // A+Lose
+                ("B", "Y") => 2+3, // B+Draw
+                ("B", "Z") => 3+6, // C+Win
+                ("C", "X") => 2+0, // Y+Lose
+                ("C", "Y") => 3+3, // Z+Draw
+                ("C", "Z") => 1+6, // X+Win
+                _ => 0,
+            };
 
-            return result
+
+            return result2
         })
         .sum();
 
