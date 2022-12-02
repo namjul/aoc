@@ -1,7 +1,8 @@
-pub fn run(input: Vec<u32>) -> Option<(u32, u32)> {
+pub fn run(input: Vec<&str>) -> Option<(u32, u32)> {
     let mut vec: Vec<u32> = Vec::new();
     let mut value: u32 = 0;
-    for num in input {
+    for line in input {
+        let num = line.parse().unwrap_or(0);line.parse().unwrap_or(0);
         value = value + num;
         if num == 0 {
             vec.push(value);
