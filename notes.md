@@ -1,0 +1,7 @@
+- ways to parse a string
+  - Split a string by whitespace (turning 1 23 4 567 into 4 elements)
+  - Split a string by some punctuation character
+  - Split a string into a list/array of characters (turning 1234567 into 7 elements)
+  - Parse a list of strings to integers
+  - Parse a few variable portions from a template string (e.g. turn move cat to 12,34 into the string cat and two integers)
+  - Regular expressions are a useful tool for performing those idioms
