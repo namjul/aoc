@@ -37,8 +37,8 @@ fn overlap(r1: Range<u32>, r2: Range<u32>) -> bool {
 
 pub fn main() -> io::Result<()> {
     return read("./src/bin/day4.txt")
-        .map(|line| {
-            let result1 = line
+        .map(|lines| {
+            let result1 = lines
                 .iter()
                 .filter_map(|line| {
                     let to_range = |range: &str| {
