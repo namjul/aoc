@@ -15,6 +15,26 @@ fn contains_fully(r1: Range<u32>, r2: Range<u32>) -> bool {
     return false;
 }
 
+
+// ....567..  5-7
+// ......789  7-9
+//
+// ....567..  5-7
+// ..345....  3-5
+
+fn overlap(r1: Range<u32>, r2: Range<u32>) -> bool {
+    let a = r1.start;
+    let b = r1.end - 1;
+    let c = r2.start;
+    let d = r2.end - 1;
+
+    if a <= c && b >= c || a >= c && d >= a {
+        return true;
+    }
+
+    return false;
+}
+
 pub fn main() -> io::Result<()> {
     return read("./src/bin/day4.txt")
         .map(|line| {
@@ -40,7 +60,7 @@ pub fn main() -> io::Result<()> {
                     let first_range = to_range(first);
                     let second_range = to_range(second);
 
-                    if contains_fully(first_range, second_range) {
+                    if overlap(first_range, second_range) {
                         return Some(true);
                     }
 
