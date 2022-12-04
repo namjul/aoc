@@ -1,12 +1,12 @@
 use std::fs;
 use std::io;
-mod day3;
+mod day4;
 
 fn main() -> io::Result<()> {
     let content =
-        fs::read_to_string("./src/day3.txt").expect("Should have been able to read the file");
+        fs::read_to_string("./src/day4.txt").expect("Should have been able to read the file");
     let input: Vec<&str> = content.lines().collect();
-    day3::run(input).map(|(first, second)| {
+    day4::run(input).map(|(first, second)| {
         println!(
             "
 first: {}
