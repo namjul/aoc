@@ -13,10 +13,10 @@ fn contains_fully(r1: Range<u32>, r2: Range<u32>) -> bool {
     return false;
 }
 
-pub fn run(input: Vec<&str>) -> Option<(u32, u32)> {
+pub fn run(input: Vec<String>) -> Option<(u32, u32)> {
     let result1 = input
         .iter()
-        .filter_map(|&line| {
+        .filter_map(|line| {
             let to_range = |range: &str| {
                 return range
                     .split_once("-")
