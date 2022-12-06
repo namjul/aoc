@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::io;
 
 pub fn main() -> io::Result<()> {
-    return read("./src/bin/day4.txt")
+    return read("./src/bin/day3.txt")
         .map(|lines| {
             static ASCII_LOWER: [char; 52] = [
                 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
