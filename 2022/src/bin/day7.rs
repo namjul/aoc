@@ -65,20 +65,25 @@ use std::io;
 //     size: Option<u32>,
 // }
 
-
 // with help from https://www.twitch.tv/videos/1672855137?filter=all&sort=time
 
 pub fn main() -> io::Result<()> {
     let input = std::fs::read_to_string("./src/bin/day7.txt")?;
 
     let mut stack = vec![("/", 0)];
+    let mut sizes_stack = vec![];
 
+    let total_fs_size = 70000000;
+    let minimum_fs_update_size = 30000000;
     let max_size = 100000;
+    let mut total_max_size = 0;
     let mut total = 0;
 
-    for line in input.lines().filter(|l| !l.is_empty()) {
+    // let x = ["$ cd .."].iter();
+    // let xx = input.lines();
 
-        if line == "cd /" || line == "ls" {
+    for line in input.lines().filter(|l| !l.is_empty()) {
+        if line == "$ cd /" || line == "$ ls" {
             continue;
         }
 
@@ -87,30 +92,40 @@ pub fn main() -> io::Result<()> {
             if dir == ".." {
                 let (_, amount) = stack.pop().unwrap();
                 if amount <= max_size {
-                    total += amount;
+                    total_max_size += amount;
                 }
+                sizes_stack.push(amount);
                 stack.last_mut().unwrap().1 += amount;
-
             } else {
                 stack.push((dir, 0));
             }
-
         }
 
         let (amount, _) = line.split_once(" ").unwrap();
 
         if let Ok(amount) = amount.parse::<usize>() {
+            total += amount;
             stack.last_mut().unwrap().1 += amount;
         } else {
             // ignore
         }
     }
 
+    let unused_space = total_fs_size - total;
+    let space_to_free = minimum_fs_update_size - unused_space;
 
+    let dirsize_to_delete = sizes_stack
+        .iter()
+        .filter(|&x| x >= &space_to_free)
+        .min();
 
-    println!("{}", total);
-
-
+    println!("stack: {:#?}", stack);
+    println!("sizes stack: {:#?}", sizes_stack);
+    println!("total_max_size: {}", total_max_size);
+    println!("total: {}", total);
+    println!("unused_space: {}", unused_space);
+    println!("space to free: {}", space_to_free);
+    println!("dirsize to delete {:#?}", dirsize_to_delete);
 
     Ok(())
 }
