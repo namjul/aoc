@@ -40,7 +40,7 @@ fn parse(input: Vec<&String>) -> Vec<Vec<char>> {
     return v;
 }
 
-fn move_creates<'a>(
+fn move_creates_cratemover_9000<'a>(
     stacks: &'a mut Vec<Vec<char>>,
     command: &'a (usize, usize, usize),
 ) -> &'a Vec<Vec<char>> {
@@ -52,6 +52,28 @@ fn move_creates<'a>(
         let kiste = &stacks[*from - 1].pop().unwrap();
         let _ = &stacks[*to - 1].push(*kiste);
     }
+
+    // println!("stacks: {:#?}", stacks);
+
+    return stacks;
+}
+
+fn move_creates_cratemover_9001<'a>(
+    stacks: &'a mut Vec<Vec<char>>,
+    command: &'a (usize, usize, usize),
+) -> &'a Vec<Vec<char>> {
+    let (mv, from, to) = command;
+
+    // println!("move: {}, from: {}, to: {}", mv, from, to);
+
+    let from_stack = &stacks[*from - 1];
+    let mut to_stack = &stacks[*to - 1];
+
+    let x = from_stack.iter().rev().take(*mv).collect::<Vec<_>>();
+
+    x.iter().for_each(|&v| {
+        to_stack.push(*v);
+    });
 
     // println!("stacks: {:#?}", stacks);
 
@@ -85,7 +107,7 @@ pub fn main() -> io::Result<()> {
                 .collect::<Vec<_>>();
 
             commands.iter().for_each(|command| {
-                move_creates(&mut stacks, command);
+                move_creates_cratemover_9001(&mut stacks, command);
             });
 
             return stacks
