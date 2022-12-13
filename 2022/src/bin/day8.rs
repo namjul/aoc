@@ -1,4 +1,4 @@
-fn check(grid: &Vec<Vec<usize>>, position: (usize, usize)) -> bool {
+fn check(grid: &Vec<Vec<usize>>, position: (usize, usize)) -> usize {
     let (x, y) = position;
 
     let left_side: Vec<&usize> = vec![x; x]
@@ -23,25 +23,28 @@ fn check(grid: &Vec<Vec<usize>>, position: (usize, usize)) -> bool {
         .enumerate()
         .map(|(index, count)| &grid[index + count][x])
         .collect();
+
     let value = grid[y][x];
 
-    // println!("value: {}", value);
-    // println!("left_side: {:#?}", left_side);
-    // println!("right_side: {:#?}", right_side);
-    // println!("top_size: {:#?}", top_size);
-    // println!("bottom_size: {:#?}", bottom_size);
-
-    let a = [left_side, right_side, top_size, bottom_size];
-
-    let result = a.iter().fold(false, |acc, x| {
-        if value > **x.iter().max().unwrap() {
-            return true;
-        }
-        return acc;
-    });
+    let result = [left_side, right_side, top_size, bottom_size]
+        .iter()
+        .map(|x| {
+            let mut acc = 0;
+            for n in x.iter() {
+                if **n < value {
+                    acc += 1;
+                } else {
+                    acc += 1;
+                    break;
+                }
+            }
+            return acc;
+        })
+        .fold(1, |acc, current| {
+            return acc * current;
+        });
 
     return result;
-
 }
 
 fn main() -> std::io::Result<()> {
@@ -59,9 +62,10 @@ fn main() -> std::io::Result<()> {
     }
 
     let mut edges_amount = 0;
+    let mut scenic_scores = vec![];
 
     for (index_y, row) in grid.iter().enumerate() {
-        for (index_x, col) in row.iter().enumerate() {
+        for (index_x, _col) in row.iter().enumerate() {
             if index_y == 0 || index_y == grid.len() - 1 {
                 edges_amount += 1;
                 continue;
@@ -72,14 +76,13 @@ fn main() -> std::io::Result<()> {
                 continue;
             }
 
-            if check(&grid, (index_x, index_y)) {
-                edges_amount += 1;
-            }
+            scenic_scores.push(check(&grid, (index_x, index_y)));
         }
     }
 
     println!("grid: {:#?}", grid);
     println!("edges_amount: {:#?}", edges_amount);
+    println!("scenic_scores: {:#?}", scenic_scores.iter().max());
 
     Ok(())
 }
