@@ -79,9 +79,6 @@ pub fn main() -> io::Result<()> {
     let mut total_max_size = 0;
     let mut total = 0;
 
-    // let x = ["$ cd .."].iter();
-    // let xx = input.lines();
-
     for line in input.lines().filter(|l| !l.is_empty()) {
         if line == "$ cd /" || line == "$ ls" {
             continue;
@@ -90,11 +87,11 @@ pub fn main() -> io::Result<()> {
         if line.starts_with("$ cd ") {
             let dir = &line[5..];
             if dir == ".." {
-                let (_, amount) = stack.pop().unwrap();
+                let (name, amount) = stack.pop().unwrap();
                 if amount <= max_size {
                     total_max_size += amount;
                 }
-                sizes_stack.push(amount);
+                sizes_stack.push((name, amount));
                 stack.last_mut().unwrap().1 += amount;
             } else {
                 stack.push((dir, 0));
@@ -111,12 +108,14 @@ pub fn main() -> io::Result<()> {
         }
     }
 
+    // sizes_stack.push(stack.pop().unwrap());
+
     let unused_space = total_fs_size - total;
     let space_to_free = minimum_fs_update_size - unused_space;
 
     let dirsize_to_delete = sizes_stack
         .iter()
-        .filter(|&x| x >= &space_to_free)
+        .filter(|(_, size)| size >= &space_to_free)
         .min();
 
     println!("stack: {:#?}", stack);
